@@ -17,10 +17,12 @@ module Soca
       def before_build
         file_patterns = options[:files] || '**/*.coffee'
         files = Dir[*[file_patterns].flatten]
+        extra_vars = options.delete(:vars) || {}
+        extra_vars.dup.each{|k, v| extra_vars[k.to_sym] = v}
         vars = {
           :env => pusher.env,
           :config => pusher.config
-        }.merge(options[:vars] || {})
+        }.merge(extra_vars)
         Soca.logger.debug "CoffeeScript vars: #{vars.inspect}"
 
         files.each do |file|
